@@ -16,10 +16,10 @@ import java.util.stream.Stream;
 
 import static com.tomtom.interfaces.IMove.MoveDirection.findByFirstLetter;
 
-public class ConfigDataResolver {
+public class InputFileResolver {
 
     private static final String rowRegex = "[r]?\\d+(\\s+[nswe]:[r]?\\d+)*";
-    private static final Logger logger = Logger.getLogger(ConfigDataResolver.class);
+    private static final Logger logger = Logger.getLogger(InputFileResolver.class);
 
 
     /**
@@ -30,6 +30,9 @@ public class ConfigDataResolver {
      * @throws IOException IF NOT EXIST
      */
     public static List<String> getLinesFromFile(String filePath) throws IOException {
+        if (StringUtils.isBlank(filePath)) {
+            throw new NoSuchFileException(String.format("File \"%s\" does not exist!", filePath));
+        }
         if (checkIfExists(filePath)) {
             List<String> lines = new ArrayList<>();
             try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
@@ -37,9 +40,7 @@ public class ConfigDataResolver {
             }
             return lines;
         } else {
-            NoSuchFileException exc = new NoSuchFileException(String.format("File \"%s\" does not exist!", filePath));
-            logger.error(exc);
-            throw exc;
+            throw new NoSuchFileException(String.format("File \"%s\" does not exist!", filePath));
         }
     }
 
@@ -77,7 +78,7 @@ public class ConfigDataResolver {
 
     public static void main(String[] args) {
         try {
-            ConfigDataResolver.getLinesFromFile("beng");
+            InputFileResolver.getLinesFromFile("beng");
         } catch (IOException e) {
             e.printStackTrace();
         }

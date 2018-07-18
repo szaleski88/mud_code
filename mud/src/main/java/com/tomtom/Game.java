@@ -2,22 +2,23 @@ package com.tomtom;
 
 import com.tomtom.elements.Dungeon;
 import com.tomtom.elements.Player;
-import com.tomtom.gameutils.ConfigDataResolver;
 import com.tomtom.gameutils.ConsoleHandler;
+import com.tomtom.gameutils.InputFileResolver;
 import com.tomtom.gameutils.MapRenderer;
 import com.tomtom.interfaces.IMove;
 import com.tomtom.mockData.MockDungeon;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Properties;
+import java.io.IOException;
+
+import static com.tomtom.gameutils.InputFileResolver.getLinesFromFile;
 
 public class Game {
 
     private Player player;
     private Dungeon dungeon;
     private final static Logger logger = Logger.getLogger(Game.class);
+
     private void setPlayer(Player player) {
         this.player = player;
     }
@@ -37,15 +38,10 @@ public class Game {
         java.util.logging.Logger.getLogger("com.almworks.sqlite4java").setLevel(java.util.logging.Level.WARNING);
         logger.info("------------------------------------------------");
         String configFilepath = args[0];
-        File configFile = new File(configFilepath);
-        if (configFile.exists()) {
-            try{
-                Properties properties = ConfigDataResolver.loadFile(configFile);
-                logger.info("Config file loaded: \t" + configFilepath);
-
-            } catch(FileNotFoundException e){
-                logger.warn("Config file not found.");
-            }
+        try {
+            InputFileResolver.getDungeonDataFrom(getLinesFromFile(configFilepath));
+        } catch (IOException exc) {
+            logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"", configFilepath), exc);
         }
 
         Game game = new Game();
