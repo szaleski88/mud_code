@@ -21,7 +21,12 @@ public class MapRenderer {
             Room room = roomEntry.getValue();
             int x = 2 * (room.getX() - mapOffset.getKey());
             int y = 2 * (room.getY() - mapOffset.getValue());
-            mapView[y][x] = String.format("r%d", room.getRoomId());
+            int roomId = room.getRoomId();
+            if(0 <= roomId  && roomId < 10) {
+                mapView[y][x] = String.format("r%d", roomId);
+            } else {
+                mapView[y][x] = String.format("%d", roomId);
+            }
             mapView[y + 1][x] = room.getSouthRoom() != null ? "| " : "  ";
             mapView[y][x + 1] = room.getEastRoom() != null ? "-" : " ";
         }

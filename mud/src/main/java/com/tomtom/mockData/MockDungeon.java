@@ -16,7 +16,7 @@ public class MockDungeon extends Dungeon {
     }
 
     private void initializeSampleCorridor() {
-        this.addCorridorEntry(0);
+        this.addDungeonEntrance(0);
         this.addRoom(0, NORTH, 3);
         this.addRoom(1, SOUTH, 3);
         this.addRoom(1, EAST, 2);

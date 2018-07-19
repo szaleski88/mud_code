@@ -4,8 +4,8 @@ import com.tomtom.interfaces.IMove;
 import javafx.util.Pair;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import static com.tomtom.interfaces.IMove.MoveDirection.*;
 import static java.lang.Math.abs;
@@ -16,7 +16,7 @@ public class Dungeon {
     private Pair<Integer, Integer> mapOffset;
     private Pair<Integer, Integer> mapSize;
 
-    protected void addCorridorEntry(Integer id) {
+    protected void addDungeonEntrance(Integer id) {
         Room entry = new Room(id);
         entry.setX(0);
         entry.setY(0);
@@ -56,6 +56,9 @@ public class Dungeon {
     }
 
     protected void calculateMapSize() {
+        if(mapOffset == null){
+            calculateMapOffset();
+        }
         mapSize = new Pair<>(abs(mapOffset.getKey() - this.rooms.values().stream().mapToInt(Room::getX).max().orElse(0)),
                 abs(mapOffset.getValue() - this.rooms.values().stream().mapToInt(Room::getY).max().orElse(0)));
     }
@@ -76,15 +79,27 @@ public class Dungeon {
         return mapSize;
     }
 
-    public void createDungeonFromPropertiesByName(Properties properties, String propertyName) {
-        assert properties != null;
-        properties.getProperty(propertyName);
+    public void createDungeonInputFileContent(Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData) {
+        assert dungeonData != null;
+
+        for (Map.Entry<Integer, List<Pair<IMove.MoveDirection, Integer>> > mapEntry: dungeonData.entrySet()) {
+            Integer currentRoomId = mapEntry.getKey();
+            if(rooms.isEmpty()) {
+                addDungeonEntrance(currentRoomId);
+            }
+            List<Pair<IMove.MoveDirection, Integer>> value = mapEntry.getValue();
+            for (Pair<IMove.MoveDirection, Integer> neighboors : value){
+                addRoom(currentRoomId, neighboors.getKey(), neighboors.getValue());
+            }
+        }
+        calculateMapOffset();
+        calculateMapSize();
     }
 
 
     public static void main(String[] args) {
         Dungeon dungeon = new Dungeon();
-        dungeon.addCorridorEntry(0);
+        dungeon.addDungeonEntrance(0);
         dungeon.addRoom(0, NORTH, 3);
         dungeon.addRoom(1, SOUTH, 3);
         dungeon.addRoom(1, EAST, 2);

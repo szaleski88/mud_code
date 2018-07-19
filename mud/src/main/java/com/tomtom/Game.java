@@ -7,9 +7,12 @@ import com.tomtom.gameutils.InputFileResolver;
 import com.tomtom.gameutils.MapRenderer;
 import com.tomtom.interfaces.IMove;
 import com.tomtom.mockData.MockDungeon;
+import javafx.util.Pair;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import static com.tomtom.gameutils.InputFileResolver.getLinesFromFile;
 
@@ -17,48 +20,76 @@ public class Game {
 
     private Player player;
     private Dungeon dungeon;
-    private final static Logger logger = Logger.getLogger(Game.class);
+    private final static Logger logger = Logger.getLogger("mud_logger");
+    private static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData;
 
     private void setPlayer(Player player) {
         this.player = player;
     }
 
-    private void initializeSampleCorridor() {
-        this.dungeon = new MockDungeon();
+    private Dungeon initializeSampleCorridor() {
+        return new MockDungeon();
     }
 
     private void getNextAction() {
         ConsoleHandler.printPossibleOptionsFor(player);
         IMove.MoveDirection moveDirection = ConsoleHandler.askForMoveDirection();
         player.move(moveDirection);
+        logger.info(String.format("Player goes:\n%s", moveDirection.name()));
     }
 
+    private void setDungeon(Dungeon dungeon) {
+        this.dungeon = dungeon;
+    }
+
+    private static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> loadDungeonDataFromFile(String inputDungeonConfigFile) {
+        try {
+            dungeonData = InputFileResolver.getDungeonDataFrom(getLinesFromFile(inputDungeonConfigFile));
+        } catch (IOException exc) {
+            logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"\n%s", inputDungeonConfigFile, exc.getMessage()));
+
+        } catch (IllegalArgumentException exc) {
+            logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"", inputDungeonConfigFile));
+            logger.error(exc.getMessage());
+        }
+        return dungeonData;
+    }
 
     public static void main(String[] args) {
         java.util.logging.Logger.getLogger("com.almworks.sqlite4java").setLevel(java.util.logging.Level.WARNING);
         logger.info("------------------------------------------------");
-        String configFilepath = args[0];
-        try {
-            InputFileResolver.getDungeonDataFrom(getLinesFromFile(configFilepath));
-        } catch (IOException exc) {
-            logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"", configFilepath), exc);
+
+        if (args.length > 0) {
+            loadDungeonDataFromFile(args[0]);
         }
 
         Game game = new Game();
-        game.initializeSampleCorridor();
+        Dungeon dungeon = new Dungeon();
+
+        if (dungeonData == null) {
+            dungeon = game.initializeSampleCorridor();
+        } else {
+            dungeon.createDungeonInputFileContent(dungeonData);
+            logger.info("NO INPUT PROVIDED: Initialized game with sample dungeon.");
+        }
+        game.setDungeon(dungeon);
 
         Player player = new Player();
         player.setCurrentRoom(game.dungeon.getRoom(0));
 
         game.setPlayer(player);
-        ConsoleHandler.printGreeting();
 
+        ConsoleHandler.printGreeting();
+        logger.info(String.format("Player:\t%s", System.getProperty("user.name")));
         System.out.println();
+
+        // GAME LOOP
         while (true) {
             System.out.println("------------------------------");
             MapRenderer.render(game.dungeon, game.player);
             game.getNextAction();
         }
     }
+
 
 }

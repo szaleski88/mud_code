@@ -18,6 +18,7 @@ import static com.tomtom.interfaces.IMove.MoveDirection.findByFirstLetter;
 
 public class InputFileResolver {
 
+    private static final String inputFilenameRegex = ".*(?i)(dungeon).*\\.txt";
     private static final String rowRegex = "[r]?\\d+(\\s+[nswe]:[r]?\\d+)*";
     private static final Logger logger = Logger.getLogger(InputFileResolver.class);
 
@@ -29,10 +30,14 @@ public class InputFileResolver {
      * @return List of not empty lines
      * @throws IOException IF NOT EXIST
      */
-    public static List<String> getLinesFromFile(String filePath) throws IOException {
+    public static List<String> getLinesFromFile(String filePath) throws IOException, IllegalArgumentException {
         if (StringUtils.isBlank(filePath)) {
             throw new NoSuchFileException(String.format("File \"%s\" does not exist!", filePath));
         }
+        if(!filePath.matches(inputFilenameRegex)){
+            throw new IllegalArgumentException(String.format("WON'T LOAD! Suspicious file: \"%s\"\n\tFile should be *.txt with \"dungeon\" in its name!", filePath));
+        }
+
         if (checkIfExists(filePath)) {
             List<String> lines = new ArrayList<>();
             try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
@@ -56,7 +61,7 @@ public class InputFileResolver {
      */
     public static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> getDungeonDataFrom(List<String> inputFileContent) {
 
-        Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData = new HashMap<>();
+        Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData = new TreeMap<>();
 
         List<List<String>> linesWithCorrectFormat = inputFileContent.stream()
                 .filter(row -> row.matches(rowRegex))
