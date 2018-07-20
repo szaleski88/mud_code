@@ -20,7 +20,7 @@ public class Game {
 
     private Player player;
     private Dungeon dungeon;
-    private final static Logger logger = Logger.getLogger("mud_logger");
+    private final static Logger logger = Logger.getLogger(Game.class);
     private static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData;
 
     private void setPlayer(Player player) {
@@ -45,6 +45,7 @@ public class Game {
     private static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> loadDungeonDataFromFile(String inputDungeonConfigFile) {
         try {
             dungeonData = InputFileResolver.getDungeonDataFrom(getLinesFromFile(inputDungeonConfigFile));
+            logger.info(String.format("LOADED DUNGEON FROM:\t%s", inputDungeonConfigFile));
         } catch (IOException exc) {
             logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"\n%s", inputDungeonConfigFile, exc.getMessage()));
 

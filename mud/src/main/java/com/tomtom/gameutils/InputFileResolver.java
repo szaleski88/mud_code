@@ -3,7 +3,6 @@ package com.tomtom.gameutils;
 import com.tomtom.interfaces.IMove;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,21 +19,20 @@ public class InputFileResolver {
 
     private static final String inputFilenameRegex = ".*(?i)(dungeon).*\\.txt";
     private static final String rowRegex = "[r]?\\d+(\\s+[nswe]:[r]?\\d+)*";
-    private static final Logger logger = Logger.getLogger(InputFileResolver.class);
-
 
     /**
      * GET LIST OF NOT EMPTY LINES FROM EXISTING FILE.
      *
-     * @param filePath path to input file
+     * @param filePath
      * @return List of not empty lines
-     * @throws IOException IF NOT EXIST
+     * @throws IOException              IF NOT EXIST
+     * @throws IllegalArgumentException IF NAME DOES NOT MATCH REGEX
      */
     public static List<String> getLinesFromFile(String filePath) throws IOException, IllegalArgumentException {
         if (StringUtils.isBlank(filePath)) {
             throw new NoSuchFileException(String.format("File \"%s\" does not exist!", filePath));
         }
-        if(!filePath.matches(inputFilenameRegex)){
+        if (!filePath.matches(inputFilenameRegex)) {
             throw new IllegalArgumentException(String.format("WON'T LOAD! Suspicious file: \"%s\"\n\tFile should be *.txt with \"dungeon\" in its name!", filePath));
         }
 

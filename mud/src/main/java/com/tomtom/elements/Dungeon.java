@@ -2,6 +2,7 @@ package com.tomtom.elements;
 
 import com.tomtom.interfaces.IMove.MoveDirection;
 import javafx.util.Pair;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ public class Dungeon {
     private Map<Integer, Room> rooms = new HashMap<>();
     private Pair<Integer, Integer> mapOffset;
     private Pair<Integer, Integer> mapSize;
+    private final static Logger logger = Logger.getLogger(Dungeon.class);
 
     protected void addDungeonEntrance(Integer id) {
         Room entry = new Room(id);
@@ -64,7 +66,7 @@ public class Dungeon {
 
             mapOffset = new Pair<>(minX, minY);
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error("ERROR WHILE CALCULATING MAP OFFSET!", e);
         }
     }
 
