@@ -1,6 +1,6 @@
 package com.tomtom.elements;
 
-import com.tomtom.interfaces.IMove;
+import com.tomtom.interfaces.IMove.MoveDirection;
 import javafx.util.Pair;
 
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class Dungeon {
     }
 
 
-    protected void addRoom(Integer currentRoomId, IMove.MoveDirection moveDirection, Integer addedRoomId) {
+    protected void addRoom(Integer currentRoomId, MoveDirection moveDirection, Integer addedRoomId) {
         this.rooms.putIfAbsent(addedRoomId, new Room(addedRoomId));
         this.rooms.putIfAbsent(currentRoomId, new Room(currentRoomId));
         Room currentRoom = this.rooms.get(currentRoomId);
@@ -52,8 +52,17 @@ public class Dungeon {
 
     protected void calculateMapOffset() {
         try {
-            mapOffset = new Pair<>(this.rooms.values().stream().mapToInt(Room::getX).min().orElse(0),
-                    this.rooms.values().stream().mapToInt(Room::getY).min().orElse(0));
+            int minX = this.rooms.values().stream()
+                    .mapToInt(Room::getX)
+                    .min()
+                    .orElse(0);
+
+            int minY = this.rooms.values().stream()
+                    .mapToInt(Room::getY)
+                    .min()
+                    .orElse(0);
+
+            mapOffset = new Pair<>(minX, minY);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -63,12 +72,20 @@ public class Dungeon {
         if (mapOffset == null) {
             calculateMapOffset();
         }
-        mapSize = new Pair<>(abs(mapOffset.getKey() - this.rooms.values().stream()
+
+        int xRange = abs(mapOffset.getKey() - this.rooms.values().stream()
                 .filter(room -> room.getX() != null && room.getY() != null)
-                .mapToInt(Room::getX).max().orElse(0)),
-                abs(mapOffset.getValue() - this.rooms.values().stream()
-                        .filter(room -> room.getX() != null && room.getY() != null)
-                        .mapToInt(Room::getY).max().orElse(0)));
+                .mapToInt(Room::getX)
+                .max()
+                .orElse(0));
+
+        int yRange = abs(mapOffset.getValue() - this.rooms.values().stream()
+                .filter(room -> room.getX() != null && room.getY() != null)
+                .mapToInt(Room::getY)
+                .max()
+                .orElse(0));
+
+        mapSize = new Pair<>(xRange, yRange);
     }
 
     public Room getRoom(Integer index) {
@@ -87,18 +104,19 @@ public class Dungeon {
         return mapSize;
     }
 
-    public void createDungeonInputFileContent(Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData) {
+    public void createDungeonInputFileContent(Map<Integer, List<Pair<MoveDirection, Integer>>> dungeonData) {
         assert dungeonData != null;
 
-        for (Map.Entry<Integer, List<Pair<IMove.MoveDirection, Integer>>> mapEntry : dungeonData.entrySet()) {
+        for (Map.Entry<Integer, List<Pair<MoveDirection, Integer>>> mapEntry : dungeonData.entrySet()) {
             Integer currentRoomId = mapEntry.getKey();
             if (rooms.isEmpty()) {
                 addDungeonEntrance(currentRoomId);
             }
-            List<Pair<IMove.MoveDirection, Integer>> value = mapEntry.getValue();
-            for (Pair<IMove.MoveDirection, Integer> neighboors : value) {
-                if (checkIfConnectionValid(dungeonData, currentRoomId, neighboors)) {
-                    addRoom(currentRoomId, neighboors.getKey(), neighboors.getValue());
+            List<Pair<MoveDirection, Integer>> value = mapEntry.getValue();
+
+            for (Pair<MoveDirection, Integer> neighboringRoom : value) {
+                if (checkIfConnectionValid(dungeonData, currentRoomId, neighboringRoom)) {
+                    addRoom(currentRoomId, neighboringRoom.getKey(), neighboringRoom.getValue());
                 }
             }
         }
@@ -107,16 +125,16 @@ public class Dungeon {
         calculateMapSize();
     }
 
-    private boolean checkIfConnectionValid(Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData,
+    private boolean checkIfConnectionValid(Map<Integer, List<Pair<MoveDirection, Integer>>> dungeonData,
                                            Integer currentRoomId,
-                                           Pair<IMove.MoveDirection, Integer> neighboor) {
+                                           Pair<MoveDirection, Integer> neighboor) {
 
-        IMove.MoveDirection oppositeDirection = getOppositeDirection(neighboor.getKey());
-        List<Pair<IMove.MoveDirection, Integer>> neighboorRooms = dungeonData.get(neighboor.getValue());
+        MoveDirection oppositeDirection = getOppositeDirection(neighboor.getKey());
 
-        return neighboorRooms.stream().anyMatch(pair -> pair.getKey().equals(oppositeDirection) && pair.getValue() == currentRoomId);
+        List<Pair<MoveDirection, Integer>> neighboringRooms = dungeonData.get(neighboor.getValue());
 
-
+        return neighboringRooms.stream()
+                .anyMatch(pair -> pair.getKey().equals(oppositeDirection) && pair.getValue().equals(currentRoomId));
     }
 
     private void deleteDisjointRooms() {
