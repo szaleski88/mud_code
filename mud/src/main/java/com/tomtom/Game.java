@@ -6,7 +6,7 @@ import com.tomtom.gameutils.ConsoleHandler;
 import com.tomtom.gameutils.InputFileResolver;
 import com.tomtom.gameutils.MapRenderer;
 import com.tomtom.interfaces.IMove;
-import com.tomtom.mockData.MockDungeon;
+import com.tomtom.sampleData.sampleDungeon;
 import javafx.util.Pair;
 import org.apache.log4j.Logger;
 
@@ -28,7 +28,7 @@ public class Game {
     }
 
     private Dungeon initializeSampleCorridor() {
-        return new MockDungeon();
+        return new sampleDungeon();
     }
 
     private void getNextAction() {
@@ -68,9 +68,9 @@ public class Game {
 
         if (dungeonData == null) {
             dungeon = game.initializeSampleCorridor();
+            logger.info("NO INPUT PROVIDED: Initialized game with sample dungeon.");
         } else {
             dungeon.createDungeonInputFileContent(dungeonData);
-            logger.info("NO INPUT PROVIDED: Initialized game with sample dungeon.");
         }
         game.setDungeon(dungeon);
 

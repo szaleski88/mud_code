@@ -1,6 +1,6 @@
 package com.tomtom.elements;
 
-import com.tomtom.mockData.MockDungeon;
+import com.tomtom.sampleData.sampleDungeon;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,7 @@ public class PlayerTest {
 
     @Before
     public void initialize(){
-        dungeon = new MockDungeon();
+        dungeon = new sampleDungeon();
         System.out.println(dungeon.getMapOffset());
     }
 

@@ -1,4 +1,4 @@
-package com.tomtom.mockData;
+package com.tomtom.sampleData;
 
 import com.tomtom.elements.Dungeon;
 
@@ -6,10 +6,10 @@ import static com.tomtom.interfaces.IMove.MoveDirection.*;
 import static com.tomtom.interfaces.IMove.MoveDirection.NORTH;
 import static com.tomtom.interfaces.IMove.MoveDirection.WEST;
 
-public class MockDungeon extends Dungeon {
+public class sampleDungeon extends Dungeon {
 
 
-    public MockDungeon() {
+    public sampleDungeon() {
         initializeSampleCorridor();
         calculateMapOffset();
         calculateMapSize();

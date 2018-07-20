@@ -130,9 +130,13 @@ public final class Room {
         if (this.westRoom != null) {
             sb.append(String.format("\twestRoom=%d\n", westRoom.getRoomId()));
         }
-        sb.append(x.toString());
-        sb.append(",\t");
-        sb.append(y.toString());
+        if (this.x != null) {
+            sb.append(x.toString());
+            sb.append(",\t");
+        }
+        if (this.y != null) {
+            sb.append(y.toString());
+        }
         return sb.toString();
     }
 
