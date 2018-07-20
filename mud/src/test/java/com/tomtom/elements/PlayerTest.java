@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.tomtom.gameutils.ConsoleHandler;
 
-import static com.tomtom.interfaces.IMove.MoveDirection.*;
+import static com.tomtom.elements.MoveDirection.*;
 
 public class PlayerTest {
     private Dungeon dungeon;

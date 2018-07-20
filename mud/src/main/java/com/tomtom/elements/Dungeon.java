@@ -1,6 +1,6 @@
 package com.tomtom.elements;
 
-import com.tomtom.interfaces.IMove.MoveDirection;
+
 import javafx.util.Pair;
 import org.apache.log4j.Logger;
 
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tomtom.interfaces.IMove.MoveDirection.*;
+import static com.tomtom.elements.MoveDirection.*;
 import static java.lang.Math.abs;
 
 public class Dungeon {

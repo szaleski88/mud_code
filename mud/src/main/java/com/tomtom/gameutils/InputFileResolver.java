@@ -1,12 +1,11 @@
 package com.tomtom.gameutils;
 
-import com.tomtom.interfaces.IMove;
+import com.tomtom.elements.MoveDirection;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
@@ -14,7 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.tomtom.interfaces.IMove.MoveDirection.findByFirstLetter;
+import static com.tomtom.elements.MoveDirection.findByFirstLetter;
 
 public class InputFileResolver {
 
@@ -58,8 +57,8 @@ public class InputFileResolver {
      * @param inputFileContent lines not empty from input file
      * @return map with roomId as key and list of direction-roomid pairs as value
      */
-    public static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> getDungeonDataFrom(List<String> inputFileContent) {
-        Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData = new TreeMap<>();
+    public static Map<Integer, List<Pair<MoveDirection, Integer>>> getDungeonDataFrom(List<String> inputFileContent) {
+        Map<Integer, List<Pair<MoveDirection, Integer>>> dungeonData = new TreeMap<>();
 
         List<List<String>> linesWithCorrectFormat = inputFileContent.stream()
                 .filter(row -> row.matches(rowRegex))
@@ -69,7 +68,7 @@ public class InputFileResolver {
         for (List<String> line : linesWithCorrectFormat) {
             Integer roomId = Integer.parseInt(line.get(0));
             dungeonData.putIfAbsent(roomId, new ArrayList<>());
-            List<Pair<IMove.MoveDirection, Integer>> roomsNeighborhood = dungeonData.compute(roomId, (k, v) -> new ArrayList<>(v));
+            List<Pair<MoveDirection, Integer>> roomsNeighborhood = dungeonData.compute(roomId, (k, v) -> new ArrayList<>(v));
             for (String values : line.subList(1, line.size())) {
                 String[] split = values.split(":");
                 roomsNeighborhood.add(new Pair<>(findByFirstLetter(split[0]), Integer.parseInt(split[1])));

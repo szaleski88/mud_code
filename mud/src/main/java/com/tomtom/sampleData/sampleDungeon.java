@@ -2,9 +2,7 @@ package com.tomtom.sampleData;
 
 import com.tomtom.elements.Dungeon;
 
-import static com.tomtom.interfaces.IMove.MoveDirection.*;
-import static com.tomtom.interfaces.IMove.MoveDirection.NORTH;
-import static com.tomtom.interfaces.IMove.MoveDirection.WEST;
+import static com.tomtom.elements.MoveDirection.*;
 
 public class sampleDungeon extends Dungeon {
 

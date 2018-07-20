@@ -1,19 +1,19 @@
 package com.tomtom.gameutils;
 
+import com.tomtom.elements.MoveDirection;
 import com.tomtom.elements.Player;
-import com.tomtom.interfaces.IMove;
 
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import static com.tomtom.interfaces.IMove.MoveDirection.findByFirstLetter;
+import static com.tomtom.elements.MoveDirection.findByFirstLetter;
 
 public class ConsoleHandler {
 
     static Scanner scanner = new Scanner(System.in);
 
     public static void printPossibleOptionsFor(Player player) {
-        String availableDirections = player.getAvailableMoves().stream().map(IMove.MoveDirection::getDirection).collect(Collectors.joining(""));
+        String availableDirections = player.getAvailableMoves().stream().map(MoveDirection::getDirection).collect(Collectors.joining(""));
         Integer currentRoomId = player.getCurrentRoomId();
 
 
@@ -23,8 +23,8 @@ public class ConsoleHandler {
         );
     }
 
-    public static IMove.MoveDirection askForMoveDirection() {
-        IMove.MoveDirection choice;
+    public static MoveDirection askForMoveDirection() {
+        MoveDirection choice;
         do {
             System.out.print("your choice: ");
             while (!scanner.hasNextLine()) {

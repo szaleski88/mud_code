@@ -1,11 +1,9 @@
 package com.tomtom.elements;
 
 
-import com.tomtom.interfaces.IMove;
-
 public final class Room {
 
-    private Integer roomId;
+    private int roomId;
     private Room northRoom;
     private Room southRoom;
     private Room eastRoom;
@@ -13,7 +11,7 @@ public final class Room {
     private Integer x;
     private Integer y;
 
-    Room(Integer roomId) {
+    Room(int roomId) {
         this.roomId = roomId;
         this.x = null;
         this.y = null;
@@ -75,7 +73,7 @@ public final class Room {
         }
     }
 
-    public Room getRoomByDirection(IMove.MoveDirection moveDirection) {
+    public Room getRoomByDirection(MoveDirection moveDirection) {
         switch (moveDirection) {
             case EAST:
                 return eastRoom;

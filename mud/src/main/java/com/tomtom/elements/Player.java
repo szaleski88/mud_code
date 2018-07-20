@@ -1,7 +1,5 @@
 package com.tomtom.elements;
 
-import com.tomtom.interfaces.IMove;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,7 +19,7 @@ public class Player implements IMove {
 
     @Override
     public void move(MoveDirection moveDirection) {
-        if(moveIsValid(moveDirection)){
+        if (moveIsValid(moveDirection)) {
             currentRoom = currentRoom.getRoomByDirection(moveDirection);
         }
     }

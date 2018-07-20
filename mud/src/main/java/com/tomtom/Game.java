@@ -1,11 +1,11 @@
 package com.tomtom;
 
 import com.tomtom.elements.Dungeon;
+import com.tomtom.elements.MoveDirection;
 import com.tomtom.elements.Player;
 import com.tomtom.gameutils.ConsoleHandler;
 import com.tomtom.gameutils.InputFileResolver;
 import com.tomtom.gameutils.MapRenderer;
-import com.tomtom.interfaces.IMove;
 import com.tomtom.sampleData.sampleDungeon;
 import javafx.util.Pair;
 import org.apache.log4j.Logger;
@@ -21,7 +21,7 @@ public class Game {
     private Player player;
     private Dungeon dungeon;
     private final static Logger logger = Logger.getLogger(Game.class);
-    private static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData;
+    private static Map<Integer, List<Pair<MoveDirection, Integer>>> dungeonData;
 
     private void setPlayer(Player player) {
         this.player = player;
@@ -33,7 +33,7 @@ public class Game {
 
     private void getNextAction() {
         ConsoleHandler.printPossibleOptionsFor(player);
-        IMove.MoveDirection moveDirection = ConsoleHandler.askForMoveDirection();
+        MoveDirection moveDirection = ConsoleHandler.askForMoveDirection();
         player.move(moveDirection);
         logger.info(String.format("Player goes:\n%s", moveDirection.name()));
     }
@@ -42,7 +42,7 @@ public class Game {
         this.dungeon = dungeon;
     }
 
-    private static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> loadDungeonDataFromFile(String inputDungeonConfigFile) {
+    private static Map<Integer, List<Pair<MoveDirection, Integer>>> loadDungeonDataFromFile(String inputDungeonConfigFile) {
         try {
             dungeonData = InputFileResolver.getDungeonDataFrom(getLinesFromFile(inputDungeonConfigFile));
         } catch (IOException exc) {

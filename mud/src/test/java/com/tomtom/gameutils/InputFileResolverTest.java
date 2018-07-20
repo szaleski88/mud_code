@@ -1,6 +1,6 @@
 package com.tomtom.gameutils;
 
-import com.tomtom.interfaces.IMove;
+import com.tomtom.elements.MoveDirection;
 import javafx.util.Pair;
 import org.junit.Test;
 
@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.*;
 
-import static com.tomtom.interfaces.IMove.MoveDirection.*;
+import static com.tomtom.elements.MoveDirection.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class InputFileResolverTest {
 
     private List<String> modelList = Arrays.asList("r0 n:r3", "r1 s:r3 e:r2", "r2 s:r5 w:r1", "r3 n:r1 s:r0 w:r4", "r4 e:r3", "r5 n:r2 e:r6", "r6 s:r8 e:r7 w:r5", "r7 s:r9 w:r6", "r8 n:r6 e:r9", "r9 n:r7 w:r8");
-    private Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> modelDungeonData = new HashMap<>();
+    private Map<Integer, List<Pair<MoveDirection, Integer>>> modelDungeonData = new HashMap<>();
 
     public InputFileResolverTest() {
         for (int i = 0; i <= 9; i++) {
@@ -43,7 +43,7 @@ public class InputFileResolverTest {
         modelDungeonData.get(9).add(pairFrom(WEST, 8));
     }
 
-    private Pair<IMove.MoveDirection, Integer> pairFrom(IMove.MoveDirection md, int id) {
+    private Pair<MoveDirection, Integer> pairFrom(MoveDirection md, int id) {
         return new Pair<>(md, id);
     }
 
@@ -71,7 +71,7 @@ public class InputFileResolverTest {
 
     @Test
     public void checkMapDataIsParsedAsExpected() {
-        Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData = InputFileResolver.getDungeonDataFrom(modelList);
+        Map<Integer, List<Pair<MoveDirection, Integer>>> dungeonData = InputFileResolver.getDungeonDataFrom(modelList);
         assertThat(dungeonData, is(modelDungeonData));
     }
 
