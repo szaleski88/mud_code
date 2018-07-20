@@ -16,7 +16,6 @@ public class MapRenderer {
         Pair<Integer, Integer> mapOffset = dungeon.getMapOffset();
         Pair<Integer, Integer> mapSize = dungeon.getMapSize();
         String[][] mapView = new String[(mapSize.getValue() * 2) + 2][(mapSize.getKey() * 2) + 2];
-
         for (Map.Entry<Integer, Room> roomEntry : rooms.entrySet()) {
             Room room = roomEntry.getValue();
             int x = 2 * (room.getX() - mapOffset.getKey());
