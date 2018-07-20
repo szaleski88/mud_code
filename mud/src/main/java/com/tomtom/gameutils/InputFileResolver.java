@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.MalformedInputException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
@@ -58,7 +59,6 @@ public class InputFileResolver {
      * @return map with roomId as key and list of direction-roomid pairs as value
      */
     public static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> getDungeonDataFrom(List<String> inputFileContent) {
-
         Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> dungeonData = new TreeMap<>();
 
         List<List<String>> linesWithCorrectFormat = inputFileContent.stream()
@@ -75,7 +75,7 @@ public class InputFileResolver {
                 roomsNeighborhood.add(new Pair<>(findByFirstLetter(split[0]), Integer.parseInt(split[1])));
             }
         }
-        return dungeonData;
+        return dungeonData.isEmpty() ? null : dungeonData;
     }
 
 

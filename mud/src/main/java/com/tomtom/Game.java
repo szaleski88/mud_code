@@ -45,13 +45,13 @@ public class Game {
     private static Map<Integer, List<Pair<IMove.MoveDirection, Integer>>> loadDungeonDataFromFile(String inputDungeonConfigFile) {
         try {
             dungeonData = InputFileResolver.getDungeonDataFrom(getLinesFromFile(inputDungeonConfigFile));
-            logger.info(String.format("LOADED DUNGEON FROM:\t%s", inputDungeonConfigFile));
         } catch (IOException exc) {
-            logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"\n%s", inputDungeonConfigFile, exc.getMessage()));
+            logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"\n%s", inputDungeonConfigFile, exc));
 
         } catch (IllegalArgumentException exc) {
-            logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"", inputDungeonConfigFile));
-            logger.error(exc.getMessage());
+            logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"", inputDungeonConfigFile), exc);
+        } catch (Exception exc) {
+            logger.error(String.format("WON'T LOAD! Suspicious file: \"%s\"\n\tis it even a text file?!", inputDungeonConfigFile), exc);
         }
         return dungeonData;
     }
@@ -72,6 +72,7 @@ public class Game {
             logger.info("NO INPUT PROVIDED: Initialized game with sample dungeon.");
         } else {
             dungeon.createDungeonInputFileContent(dungeonData);
+            logger.info(String.format("LOADED DUNGEON FROM:\t%s", args[0]));
         }
         game.setDungeon(dungeon);
 

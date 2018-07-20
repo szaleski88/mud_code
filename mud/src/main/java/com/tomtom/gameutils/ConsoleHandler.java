@@ -25,12 +25,10 @@ public class ConsoleHandler {
 
     public static IMove.MoveDirection askForMoveDirection() {
         IMove.MoveDirection choice;
-        boolean printedGoodbye = false;
         do {
             System.out.print("your choice: ");
-            while (!scanner.hasNextLine() && !printedGoodbye) {
+            while (!scanner.hasNextLine()) {
                 System.out.printf("THANKS FOR PLAYING %s!!!\n", System.getProperty("user.name"));
-                printedGoodbye = true;
             }
             choice = findByFirstLetter(scanner.nextLine());
         } while (choice == null);
