@@ -4,16 +4,15 @@ package com.tomtom.elements;
 import javafx.util.Pair;
 import org.apache.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.tomtom.elements.MoveDirection.*;
 import static java.lang.Math.abs;
+import static java.lang.Math.min;
 
 public class Dungeon {
 
-    private Map<Integer, Room> rooms = new HashMap<>();
+    private TreeMap<Integer, Room> rooms = new TreeMap<>();
     private Pair<Integer, Integer> mapOffset;
     private Pair<Integer, Integer> mapSize;
     private final static Logger logger = Logger.getLogger(Dungeon.class);
@@ -27,29 +26,12 @@ public class Dungeon {
     }
 
 
-    protected void addRoom(Integer currentRoomId, MoveDirection moveDirection, Integer addedRoomId) {
+    protected void addRoom(Integer currentRoomId, MoveDirection moveDirection, Integer addedRoomId) throws InvalidInputDataException {
         this.rooms.putIfAbsent(addedRoomId, new Room(addedRoomId));
         this.rooms.putIfAbsent(currentRoomId, new Room(currentRoomId));
         Room currentRoom = this.rooms.get(currentRoomId);
         Room addedRoom = this.rooms.get(addedRoomId);
-        switch (moveDirection) {
-            case EAST:
-                currentRoom.setEastRoom(addedRoom);
-                addedRoom.setWestRoom(currentRoom);
-                break;
-            case WEST:
-                currentRoom.setWestRoom(addedRoom);
-                addedRoom.setEastRoom(currentRoom);
-                break;
-            case NORTH:
-                currentRoom.setNorthRoom(addedRoom);
-                addedRoom.setSouthRoom(currentRoom);
-                break;
-            case SOUTH:
-                currentRoom.setSouthRoom(addedRoom);
-                addedRoom.setNorthRoom(currentRoom);
-                break;
-        }
+        currentRoom.setNeighboringRoom(addedRoom, moveDirection);
     }
 
     protected void calculateMapOffset() {
@@ -106,7 +88,7 @@ public class Dungeon {
         return mapSize;
     }
 
-    public void createDungeonInputFileContent(Map<Integer, List<Pair<MoveDirection, Integer>>> dungeonData) {
+    public void createDungeonFromInputFileContent(Map<Integer, List<Pair<MoveDirection, Integer>>> dungeonData) throws InvalidInputDataException {
         assert dungeonData != null;
 
         for (Map.Entry<Integer, List<Pair<MoveDirection, Integer>>> mapEntry : dungeonData.entrySet()) {
@@ -117,14 +99,20 @@ public class Dungeon {
             List<Pair<MoveDirection, Integer>> value = mapEntry.getValue();
 
             for (Pair<MoveDirection, Integer> neighboringRoom : value) {
-                if (checkIfConnectionValid(dungeonData, currentRoomId, neighboringRoom)) {
-                    addRoom(currentRoomId, neighboringRoom.getKey(), neighboringRoom.getValue());
+
+                try {
+                    if (checkIfConnectionValid(dungeonData, currentRoomId, neighboringRoom)) {
+                        addRoom(currentRoomId, neighboringRoom.getKey(), neighboringRoom.getValue());
+                    }
+                } catch (NullPointerException | InvalidInputDataException exc) {
+                    logger.error(String.format("invalid connection between: %d & %s%d", currentRoomId, neighboringRoom.getKey(), neighboringRoom.getValue()), exc);
+                    throw exc;
                 }
             }
         }
-        deleteDisjointRooms();
-        calculateMapOffset();
+        fillCoordinates();
         calculateMapSize();
+        deleteDisjointRooms();
     }
 
     private boolean checkIfConnectionValid(Map<Integer, List<Pair<MoveDirection, Integer>>> dungeonData,
@@ -140,7 +128,7 @@ public class Dungeon {
     }
 
     private void deleteDisjointRooms() {
-        Map<Integer, Room> cleanedRooms = new HashMap<>(this.rooms);
+        TreeMap<Integer, Room> cleanedRooms = new TreeMap<>(this.rooms);
 
         for (Map.Entry<Integer, Room> mapEntry : this.rooms.entrySet()) {
             Room currentRoom = mapEntry.getValue();
@@ -152,36 +140,60 @@ public class Dungeon {
         this.rooms = cleanedRooms;
     }
 
+    protected void fillCoordinates() {
+        Room firstRoom = rooms.firstEntry().getValue();
+        firstRoom.setX(0);
+        firstRoom.setY(0);
 
-    public static void main(String[] args) {
-        Dungeon dungeon = new Dungeon();
-        dungeon.addDungeonEntrance(0);
-        dungeon.addRoom(0, NORTH, 3);
-        dungeon.addRoom(1, SOUTH, 3);
-        dungeon.addRoom(1, EAST, 2);
-        dungeon.addRoom(2, SOUTH, 5);
-        dungeon.addRoom(2, WEST, 1);
-        dungeon.addRoom(3, NORTH, 1);
-        dungeon.addRoom(3, SOUTH, 0);
-        dungeon.addRoom(3, WEST, 4);
-        dungeon.addRoom(4, EAST, 3);
-        dungeon.addRoom(5, NORTH, 2);
-        dungeon.addRoom(5, EAST, 6);
-        dungeon.addRoom(6, SOUTH, 8);
-        dungeon.addRoom(6, EAST, 7);
-        dungeon.addRoom(6, WEST, 5);
-        dungeon.addRoom(7, SOUTH, 9);
-        dungeon.addRoom(7, WEST, 6);
-        dungeon.addRoom(8, NORTH, 6);
-        dungeon.addRoom(8, EAST, 9);
-        dungeon.addRoom(9, NORTH, 7);
-        dungeon.addRoom(9, WEST, 8);
+        Stack<Room> roomStack = new Stack<>();
 
-        for (Map.Entry<Integer, Room> room : dungeon.rooms.entrySet()) {
-            System.out.println(room.getKey().toString() + room.getValue());
+        roomStack.push(firstRoom);
+
+        while (!roomStack.empty()) {
+            Room currentRoom = roomStack.pop();
+            Room[] neighboringRooms = currentRoom.getNeighboringRooms();
+
+            for (int i = 0; i < neighboringRooms.length; i++) {
+                Room nRoom = neighboringRooms[i];
+                if (nRoom != null && nRoom.getY() == null && nRoom.getX() == null) {
+                    setCoordinates(nRoom, i, currentRoom);
+                    updateMapOffset(nRoom);
+                    roomStack.push(nRoom);
+                }
+            }
         }
-        dungeon.calculateMapOffset();
     }
 
+    private void updateMapOffset(Room nRoom) {
+        Integer x = nRoom.getX();
+        Integer y = nRoom.getY();
+        if (x < mapOffset.getKey() || y < mapOffset.getValue()) {
+            mapOffset = new Pair<>(min(x, mapOffset.getKey()), min(y, mapOffset.getValue()));
+        }
+    }
+
+    private void setCoordinates(Room nRoom, int i, Room currentRoom) {
+        Integer x = currentRoom.getX();
+        Integer y = currentRoom.getY();
+
+        switch (i) {
+            case 0:
+                nRoom.setX(x);
+                nRoom.setY(y - 1);
+                break;
+            case 1:
+                nRoom.setX(x);
+                nRoom.setY(y + 1);
+                break;
+            case 2:
+                nRoom.setX(x - 1);
+                nRoom.setY(y);
+                break;
+            case 3:
+                nRoom.setX(x + 1);
+                nRoom.setY(y);
+                break;
+        }
+    }
 
 }

@@ -3,11 +3,9 @@ package com.tomtom.elements;
 
 public final class Room {
 
+
     private int roomId;
-    private Room northRoom;
-    private Room southRoom;
-    private Room eastRoom;
-    private Room westRoom;
+    private final Room[] neighboringRooms = new Room[4];
     private Integer x;
     private Integer y;
 
@@ -17,83 +15,28 @@ public final class Room {
         this.y = null;
     }
 
-    public Room getNorthRoom() {
-        return northRoom;
+    public Room getNeighboringRoomByDirection(MoveDirection moveDirection) {
+        return neighboringRooms[moveDirection.getDirectionId()];
     }
 
-    public void setNorthRoom(Room northRoom) {
-        if (this.northRoom == null) {
-            this.northRoom = northRoom;
-            if (this.x == null && this.y == null && northRoom.getX() != null && northRoom.getY() != null) {
-                this.x = northRoom.getX();
-                this.y = northRoom.getY() + 1;
-            }
-        }
-    }
-
-    public Room getSouthRoom() {
-        return southRoom;
-    }
-
-    public void setSouthRoom(Room southRoom) {
-        if (this.southRoom == null) {
-            this.southRoom = southRoom;
-            if (this.x == null && this.y == null && southRoom.getX() != null && southRoom.getY() != null) {
-                this.x = southRoom.getX();
-                this.y = southRoom.getY() - 1;
-            }
-        }
-    }
-
-    public Room getEastRoom() {
-        return eastRoom;
-    }
-
-    public void setEastRoom(Room eastRoom) {
-        if (this.eastRoom == null) {
-            this.eastRoom = eastRoom;
-            if (this.x == null && this.y == null && eastRoom.getX() != null && eastRoom.getY() != null) {
-                this.x = eastRoom.getX() - 1;
-                this.y = eastRoom.getY();
-            }
-        }
-    }
-
-    public Room getWestRoom() {
-        return westRoom;
-    }
-
-    public void setWestRoom(Room westRoom) {
-        if (this.westRoom == null) {
-            this.westRoom = westRoom;
-            if (this.x == null && this.y == null && westRoom.getX() != null && westRoom.getY() != null) {
-                this.x = westRoom.getX() + 1;
-                this.y = westRoom.getY();
-            }
-        }
-    }
-
-    public Room getRoomByDirection(MoveDirection moveDirection) {
-        switch (moveDirection) {
-            case EAST:
-                return eastRoom;
-            case WEST:
-                return westRoom;
-            case NORTH:
-                return northRoom;
-            case SOUTH:
-                return southRoom;
-            default:
-                return null;
-        }
-    }
-
-    public Integer getRoomId() {
+    public int getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
+    public void setNeighboringRoom(Room room, MoveDirection moveDirection) throws InvalidInputDataException {
+        Room nRoom = getNeighboringRoomByDirection(moveDirection);
+        if (nRoom == null) {
+            this.neighboringRooms[moveDirection.getDirectionId()] = room;
+        } else {
+            if (!nRoom.equals(room)) {
+                throw new InvalidInputDataException(String.format("Invalid data. Current room id: %d. expected \"%s\" neighbor id %d." +
+                        " In fact was: %d", this.roomId, moveDirection.name(), nRoom.roomId, room.roomId));
+            }
+        }
+    }
+
+    public Room[] getNeighboringRooms() {
+        return neighboringRooms;
     }
 
     public Integer getX() {
@@ -116,17 +59,11 @@ public final class Room {
     public String toString() {
 
         StringBuilder sb = new StringBuilder(String.format("ROOM ID: %d\n", this.roomId));
-        if (this.northRoom != null) {
-            sb.append(String.format("\tnorthRoom=%d\n", northRoom.getRoomId()));
-        }
-        if (this.eastRoom != null) {
-            sb.append(String.format("\teastRoom=%d\n", eastRoom.getRoomId()));
-        }
-        if (this.southRoom != null) {
-            sb.append(String.format("\tsouthRoom=%d\n", southRoom.getRoomId()));
-        }
-        if (this.westRoom != null) {
-            sb.append(String.format("\twestRoom=%d\n", westRoom.getRoomId()));
+
+        for (int i = 0; i < neighboringRooms.length; i++) {
+            if (neighboringRooms[i] != null) {
+                sb.append(String.format("\t%s=%d\n", MoveDirection.values()[i], neighboringRooms[i].getRoomId()));
+            }
         }
         if (this.x != null) {
             sb.append(x.toString());

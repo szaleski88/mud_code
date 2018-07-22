@@ -21,26 +21,26 @@ public class InputFileResolverTest {
         for (int i = 0; i <= 9; i++) {
             modelDungeonData.put(i, new ArrayList<>());
         }
-        modelDungeonData.get(0).add(pairFrom(NORTH, 3));
-        modelDungeonData.get(1).add(pairFrom(SOUTH, 3));
-        modelDungeonData.get(1).add(pairFrom(EAST, 2));
-        modelDungeonData.get(2).add(pairFrom(SOUTH, 5));
-        modelDungeonData.get(2).add(pairFrom(WEST, 1));
-        modelDungeonData.get(3).add(pairFrom(NORTH, 1));
-        modelDungeonData.get(3).add(pairFrom(SOUTH, 0));
-        modelDungeonData.get(3).add(pairFrom(WEST, 4));
-        modelDungeonData.get(4).add(pairFrom(EAST, 3));
-        modelDungeonData.get(5).add(pairFrom(NORTH, 2));
-        modelDungeonData.get(5).add(pairFrom(EAST, 6));
-        modelDungeonData.get(6).add(pairFrom(SOUTH, 8));
-        modelDungeonData.get(6).add(pairFrom(EAST, 7));
-        modelDungeonData.get(6).add(pairFrom(WEST, 5));
-        modelDungeonData.get(7).add(pairFrom(SOUTH, 9));
-        modelDungeonData.get(7).add(pairFrom(WEST, 6));
-        modelDungeonData.get(8).add(pairFrom(NORTH, 6));
-        modelDungeonData.get(8).add(pairFrom(EAST, 9));
-        modelDungeonData.get(9).add(pairFrom(NORTH, 7));
-        modelDungeonData.get(9).add(pairFrom(WEST, 8));
+        modelDungeonData.get(0).add(pairFrom(N, 3));
+        modelDungeonData.get(1).add(pairFrom(S, 3));
+        modelDungeonData.get(1).add(pairFrom(E, 2));
+        modelDungeonData.get(2).add(pairFrom(S, 5));
+        modelDungeonData.get(2).add(pairFrom(W, 1));
+        modelDungeonData.get(3).add(pairFrom(N, 1));
+        modelDungeonData.get(3).add(pairFrom(S, 0));
+        modelDungeonData.get(3).add(pairFrom(W, 4));
+        modelDungeonData.get(4).add(pairFrom(E, 3));
+        modelDungeonData.get(5).add(pairFrom(N, 2));
+        modelDungeonData.get(5).add(pairFrom(E, 6));
+        modelDungeonData.get(6).add(pairFrom(S, 8));
+        modelDungeonData.get(6).add(pairFrom(E, 7));
+        modelDungeonData.get(6).add(pairFrom(W, 5));
+        modelDungeonData.get(7).add(pairFrom(S, 9));
+        modelDungeonData.get(7).add(pairFrom(W, 6));
+        modelDungeonData.get(8).add(pairFrom(N, 6));
+        modelDungeonData.get(8).add(pairFrom(E, 9));
+        modelDungeonData.get(9).add(pairFrom(N, 7));
+        modelDungeonData.get(9).add(pairFrom(W, 8));
     }
 
     private Pair<MoveDirection, Integer> pairFrom(MoveDirection md, int id) {

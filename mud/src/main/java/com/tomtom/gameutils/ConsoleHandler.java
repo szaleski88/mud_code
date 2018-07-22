@@ -10,10 +10,13 @@ import static com.tomtom.elements.MoveDirection.findByFirstLetter;
 
 public class ConsoleHandler {
 
-    static Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void printPossibleOptionsFor(Player player) {
-        String availableDirections = player.getAvailableMoves().stream().map(MoveDirection::getDirection).collect(Collectors.joining(""));
+        String availableDirections = player.getAvailableMoves().stream()
+//                                                                .map(MoveDirection::getDirectionId)
+                                                                .map(md -> md.toString().toLowerCase())
+                                                                .collect(Collectors.joining(""));
         Integer currentRoomId = player.getCurrentRoomId();
 
 

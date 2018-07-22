@@ -1,6 +1,7 @@
 package com.tomtom.sampleData;
 
 import com.tomtom.elements.Dungeon;
+import com.tomtom.elements.InvalidInputDataException;
 
 import static com.tomtom.elements.MoveDirection.*;
 
@@ -9,31 +10,35 @@ public class sampleDungeon extends Dungeon {
 
     public sampleDungeon() {
         initializeSampleCorridor();
-        calculateMapOffset();
+        fillCoordinates();
         calculateMapSize();
     }
 
     private void initializeSampleCorridor() {
         this.addDungeonEntrance(0);
-        this.addRoom(0, NORTH, 3);
-        this.addRoom(1, SOUTH, 3);
-        this.addRoom(1, EAST, 2);
-        this.addRoom(2, SOUTH, 5);
-        this.addRoom(2, WEST, 1);
-        this.addRoom(3, NORTH, 1);
-        this.addRoom(3, SOUTH, 0);
-        this.addRoom(3, WEST, 4);
-        this.addRoom(4, EAST, 3);
-        this.addRoom(5, NORTH, 2);
-        this.addRoom(5, EAST, 6);
-        this.addRoom(6, SOUTH, 8);
-        this.addRoom(6, EAST, 7);
-        this.addRoom(6, WEST, 5);
-        this.addRoom(7, SOUTH, 9);
-        this.addRoom(7, WEST, 6);
-        this.addRoom(8, NORTH, 6);
-        this.addRoom(8, EAST, 9);
-        this.addRoom(9, NORTH, 7);
-        this.addRoom(9, WEST, 8);
+        try {
+            this.addRoom(0, N, 3);
+        this.addRoom(1, S, 3);
+        this.addRoom(1, E, 2);
+        this.addRoom(2, S, 5);
+        this.addRoom(2, W, 1);
+        this.addRoom(3, N, 1);
+        this.addRoom(3, S, 0);
+        this.addRoom(3, W, 4);
+        this.addRoom(4, E, 3);
+        this.addRoom(5, N, 2);
+        this.addRoom(5, E, 6);
+        this.addRoom(6, S, 8);
+        this.addRoom(6, E, 7);
+        this.addRoom(6, W, 5);
+        this.addRoom(7, S, 9);
+        this.addRoom(7, W, 6);
+        this.addRoom(8, N, 6);
+        this.addRoom(8, E, 9);
+        this.addRoom(9, N, 7);
+        this.addRoom(9, W, 8);
+        } catch (InvalidInputDataException e) {
+            e.printStackTrace();
+        }
     }
 }

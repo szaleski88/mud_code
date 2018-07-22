@@ -1,6 +1,7 @@
 package com.tomtom;
 
 import com.tomtom.elements.Dungeon;
+import com.tomtom.elements.InvalidInputDataException;
 import com.tomtom.elements.MoveDirection;
 import com.tomtom.elements.Player;
 import com.tomtom.gameutils.ConsoleHandler;
@@ -56,7 +57,7 @@ public class Game {
         return dungeonData;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidInputDataException {
         java.util.logging.Logger.getLogger("com.almworks.sqlite4java").setLevel(java.util.logging.Level.WARNING);
         logger.info("------------------------------------------------");
 
@@ -71,7 +72,7 @@ public class Game {
             dungeon = game.initializeSampleCorridor();
             logger.info("NO INPUT PROVIDED: Initialized game with sample dungeon.");
         } else {
-            dungeon.createDungeonInputFileContent(dungeonData);
+            dungeon.createDungeonFromInputFileContent(dungeonData);
             logger.info(String.format("LOADED DUNGEON FROM:\t%s", args[0]));
         }
         game.setDungeon(dungeon);

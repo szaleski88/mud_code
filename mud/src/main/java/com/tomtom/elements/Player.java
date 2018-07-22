@@ -14,13 +14,13 @@ public class Player implements IMove {
 
     @Override
     public boolean moveIsValid(MoveDirection moveDirection) {
-        return currentRoom.getRoomByDirection(moveDirection) != null;
+        return currentRoom.getNeighboringRoomByDirection(moveDirection) != null;
     }
 
     @Override
     public void move(MoveDirection moveDirection) {
         if (moveIsValid(moveDirection)) {
-            currentRoom = currentRoom.getRoomByDirection(moveDirection);
+            currentRoom = currentRoom.getNeighboringRoomByDirection(moveDirection);
         }
     }
 

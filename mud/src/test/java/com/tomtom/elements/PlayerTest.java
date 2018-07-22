@@ -21,49 +21,49 @@ public class PlayerTest {
     @Test
     public void moveNorthIsPossible() {
         player.setCurrentRoom(dungeon.getRoom(0));
-        Assert.assertTrue(player.moveIsValid(NORTH));
+        Assert.assertTrue(player.moveIsValid(N));
     }
 
     @Test
     public void moveNorthIsNotPossible() {
         player.setCurrentRoom(dungeon.getRoom(1));
-        Assert.assertFalse(player.moveIsValid(NORTH));
+        Assert.assertFalse(player.moveIsValid(N));
     }
 
     @Test
     public void moveSouthIsPossible() {
         player.setCurrentRoom(dungeon.getRoom(3));
-        Assert.assertTrue(player.moveIsValid(SOUTH));
+        Assert.assertTrue(player.moveIsValid(S));
     }
 
     @Test
     public void moveSouthIsNotPossible() {
         player.setCurrentRoom(dungeon.getRoom(0));
-        Assert.assertFalse(player.moveIsValid(SOUTH));
+        Assert.assertFalse(player.moveIsValid(S));
     }
 
     @Test
     public void moveWestIsPossible() {
         player.setCurrentRoom(dungeon.getRoom(3));
-        Assert.assertTrue(player.moveIsValid(WEST));
+        Assert.assertTrue(player.moveIsValid(W));
     }
 
     @Test
     public void moveWestIsNotPossible() {
         player.setCurrentRoom(dungeon.getRoom(4));
-        Assert.assertFalse(player.moveIsValid(WEST));
+        Assert.assertFalse(player.moveIsValid(W));
     }
 
     @Test
     public void moveEastIsPossible() {
         player.setCurrentRoom(dungeon.getRoom(4));
-        Assert.assertFalse(player.moveIsValid(SOUTH));
+        Assert.assertFalse(player.moveIsValid(S));
     }
 
     @Test
     public void moveEastIsNotPossible() {
         player.setCurrentRoom(dungeon.getRoom(3));
-        Assert.assertFalse(player.moveIsValid(EAST));
+        Assert.assertFalse(player.moveIsValid(E));
     }
 
     @Test
