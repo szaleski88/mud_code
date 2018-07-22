@@ -13,15 +13,15 @@ import static java.lang.Math.min;
 public class Dungeon {
 
     private TreeMap<Integer, Room> rooms = new TreeMap<>();
-    private Pair<Integer, Integer> mapOffset;
-    private Pair<Integer, Integer> mapSize;
+    private Pair<Integer, Integer> mapOffset = new Pair<>(0,0);
+    private Pair<Integer, Integer> mapSize = new Pair<>(0,0);
     private final static Logger logger = Logger.getLogger(Dungeon.class);
 
     protected void addDungeonEntrance(Integer id) {
         Room entry = new Room(id);
         entry.setX(0);
         entry.setY(0);
-        mapOffset = new Pair<>(0, 0);
+        updateMapOffset(entry);
         this.rooms.put(id, entry);
     }
 
@@ -34,7 +34,7 @@ public class Dungeon {
         currentRoom.setNeighboringRoom(addedRoom, moveDirection);
     }
 
-    protected void calculateMapOffset() {
+    private void calculateMapOffset() {
         try {
             int minX = this.rooms.values().stream()
                     .mapToInt(Room::getX)
@@ -89,7 +89,9 @@ public class Dungeon {
     }
 
     public void createDungeonFromInputFileContent(Map<Integer, List<Pair<MoveDirection, Integer>>> dungeonData) throws InvalidInputDataException {
-        assert dungeonData != null;
+        if(dungeonData == null){
+            throw new InvalidInputDataException("Input Cannot be null!");
+        }
 
         for (Map.Entry<Integer, List<Pair<MoveDirection, Integer>>> mapEntry : dungeonData.entrySet()) {
             Integer currentRoomId = mapEntry.getKey();
@@ -144,6 +146,7 @@ public class Dungeon {
         Room firstRoom = rooms.firstEntry().getValue();
         firstRoom.setX(0);
         firstRoom.setY(0);
+        mapOffset = new Pair<>(0,0);
 
         Stack<Room> roomStack = new Stack<>();
 

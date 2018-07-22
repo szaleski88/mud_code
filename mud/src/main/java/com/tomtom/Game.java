@@ -43,21 +43,23 @@ public class Game {
         this.dungeon = dungeon;
     }
 
-    private static Map<Integer, List<Pair<MoveDirection, Integer>>> loadDungeonDataFromFile(String inputDungeonConfigFile) {
+    private static Map<Integer, List<Pair<MoveDirection, Integer>>> loadDungeonDataFromFile(String inputDungeonConfigFile) throws IOException {
         try {
             dungeonData = InputFileResolver.getDungeonDataFrom(getLinesFromFile(inputDungeonConfigFile));
         } catch (IOException exc) {
             logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"\n%s", inputDungeonConfigFile, exc));
-
+            throw exc;
         } catch (IllegalArgumentException exc) {
             logger.error(String.format("Error while loading Dungeon Data from input file: \"%s\"", inputDungeonConfigFile), exc);
+            throw exc;
         } catch (Exception exc) {
             logger.error(String.format("WON'T LOAD! Suspicious file: \"%s\"\n\tis it even a text file?!", inputDungeonConfigFile), exc);
+            throw exc;
         }
         return dungeonData;
     }
 
-    public static void main(String[] args) throws InvalidInputDataException {
+    public static void main(String[] args) throws InvalidInputDataException, IOException {
         java.util.logging.Logger.getLogger("com.almworks.sqlite4java").setLevel(java.util.logging.Level.WARNING);
         logger.info("------------------------------------------------");
 
