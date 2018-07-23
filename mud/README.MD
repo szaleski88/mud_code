@@ -7,7 +7,7 @@ Run app with optional parameter: path to text file with "dungeon" in its name
 <u>If no parameter provided - default/sample Dungeon will load.</u>
 
 
-<h4>Input file structure:<h4>
+<h4>Input file structure:</h4>
 
 [room_id] [n/s/w/e]:[room_id]
 
